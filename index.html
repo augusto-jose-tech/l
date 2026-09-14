@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Burger House - Cardápio Digital</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+        background: #1a1a1a;
+        color: #fff;
+        overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+        background: linear-gradient(135deg, #ff4500, #ff6b35);
+        padding: 40px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 4s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .logo {
+        font-size: 3rem;
+        font-weight: 900;
+        text-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 2;
+        letter-spacing: 2px;
+    }
+
+    .logo span {
+        color: #ffe66d;
+    }
+
+    .tagline {
+        font-size: 1.1rem;
+        margin-top: 10px;
+        opacity: 0.95;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* NAV STICKY */
+    .nav-menu {
+        background: #2a2a2a;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+        flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 20px;
+        transition: all 0.3s;
+    }
+
+    .nav-menu a:hover {
+        background: #ff4500;
+        transform: translateY(-2px);
+    }
+
+    /* CONTAINER */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        text-align: center;
+        margin: 40px 0 30px;
+        color: #ff6b35;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 4px;
+        background: #ffe66d;
+        margin: 15px auto;
+        border-radius: 2px;
+    }
+
+    /* GRID DE PRODUTOS */
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    .burger-card {
+        background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        transition: all 0.4s ease;
+        position: relative;
+    }
+
+    .burger-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(255, 69, 0, 0.3);
+    }
+
+    .badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #ff4500;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        z-index: 10;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    .burger-image {
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .burger-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .burger-card:hover .burger-image img {
+        transform: scale(1.1);
+    }
+
+    .burger-info {
+        padding: 20px;
+    }
+
+    .burger-name {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #ffe66d;
+    }
+
+    .burger-desc {
+        color: #b0b0b0;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        min-height: 60px;
+    }
+
+    .burger-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .price {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: #4ade80;
+    }
+
+    .price small {
+        font-size: 0.9rem;
+        color: #b0b0b0;
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg, #ff4500, #ff6b35);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-add:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(255, 69, 0, 0.5);
+    }
+
+    /* CHATBOT */
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .chat-toggle {
+        width: 65px;
+        height: 65px;
+        background: linear-gradient(135deg, #ff4500, #ff6b35);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 5px 20px rgba(255, 69, 0, 0.6);
+        font-size: 28px;
+        transition: all 0.3s;
+        animation: chatPulse 2s infinite;
+    }
+
+    @keyframes chatPulse {
+        0%, 100% { box-shadow: 0 5px 20px rgba(255, 69, 0, 0.6); }
+        50% { box-shadow: 0 5px 30px rgba(255, 69, 0, 0.9), 0 0 0 10px rgba(255, 69, 0, 0.1); }
+    }
+
+    .chat-toggle:hover {
+        transform: scale(1.1);
+    }
+
+    .notification-dot {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 20px;
+        height: 20px;
+        background: #ef4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        border: 2px solid #1a1a1a;
+    }
+
+    .chat-box {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 370px;
+        height: 550px;
+        background: #2a2a2a;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid #444;
+    }
+
+    .chat-box.active {
+        display: flex;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, #ff4500, #ff6b35);
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .chat-avatar {
+        width: 45px;
+        height: 45px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .chat-header-info h4 {
+        font-size: 1rem;
+    }
+
+    .chat-header-info span {
+        font-size: 0.75rem;
+        opacity: 0.9;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #4ade80;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .chat-close {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 20px;
+        opacity: 0.8;
+    }
+
+    .chat-close:hover {
+        opacity: 1;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #ff4500;
+        border-radius: 10px;
+    }
+
+    .message {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        animation: messageIn 0.3s ease;
+    }
+
+    @keyframes messageIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.bot {
+        background: #3a3a3a;
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+    }
+
+    .message.user {
+        background: linear-gradient(135deg, #ff4500, #ff6b35);
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+    }
+
+    .quick-replies {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .quick-btn {
+        background: #3a3a3a;
+        border: 1px solid #ff6b35;
+        color: #ff6b35;
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .quick-btn:hover {
+        background: #ff6b35;
+        color: white;
+    }
+
+    .chat-input-area {
+        padding: 15px;
+        background: #232323;
+        display: flex;
+        gap: 10px;
+    }
+
+    .chat-input {
+        flex: 1;
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 25px;
+        outline: none;
+        font-size: 0.9rem;
+    }
+
+    .chat-input:focus {
+        border-color: #ff6b35;
+    }
+
+    .chat-send {
+        background: linear-gradient(135deg, #ff4500, #ff6b35);
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s;
+    }
+
+    .chat-send:hover {
+        transform: scale(1.1);
+    }
+
+    .typing-indicator {
+        display: flex;
+        gap: 4px;
+        padding: 12px 16px;
+        background: #3a3a3a;
+        border-radius: 18px;
+        align-self: flex-start;
+        width: fit-content;
+    }
+
+    .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        background: #ff6b35;
+        border-radius: 50%;
+        animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-8px); }
+    }
+
+    /* CARRINHO FLUTUANTE */
+    .cart-float {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        padding: 15px 25px;
+        border-radius: 30px;
+        display: none;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 5px 20px rgba(74, 222, 128, 0.5);
+        cursor: pointer;
+        font-weight: bold;
+        z-index: 999;
+    }
+
+    .cart-float.show {
+        display: flex;
+        animation: slideIn 0.3s;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(-100px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .cart-count {
+        background: white;
+        color: #22c55e;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    /* FOOTER */
+    footer {
+        background: #0f0f0f;
+        text-align: center;
+        padding: 30px;
+        margin-top: 50px;
+        color: #888;
+    }
+
+    .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 15px 0;
+        font-size: 1.5rem;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 480px) {
+        .chat-box {
+            width: 90vw;
+            right: 5vw;
+            height: 70vh;
+        }
+        .logo { font-size: 2rem; }
+        .nav-menu { gap: 15px; font-size: 0.85rem; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🔥 BURGER<span>HOUSE</span></div>
+    <p class="tagline">Os melhores hambúrgueres artesanais da cidade!</p>
+</header>
+
+<nav class="nav-menu">
+    <a href="#classicos">🍔 Clássicos</a>
+    <a href="#especiais">⭐ Especiais</a>
+    <a href="#bebidas">🥤 Bebidas</a>
+    <a href="#sobremesas">🍰 Sobremesas</a>
+</nav>
+
+<div class="container">
+
+    <h2 class="section-title" id="classicos">🍔 Clássicos</h2>
+    <div class="menu-grid">
+        
+        <div class="burger-card">
+            <div class="badge">🔥 Mais vendido</div>
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" alt="Cheeseburger">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Cheese Bacon</div>
+                <p class="burger-desc">Pão brioche, blend 180g, queijo cheddar duplo, bacon crocante, alface e molho especial.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 28<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('Cheese Bacon', 28.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="burger-card">
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=500" alt="Classic Burger">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Classic Burger</div>
+                <p class="burger-desc">Pão australiano, blend 150g, queijo prato, tomate, alface e maionese da casa.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 22<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('Classic Burger', 22.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="burger-card">
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500" alt="Duplo Bacon">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Duplo Bacon</div>
+                <p class="burger-desc">Dois blends de 120g, bacon extra, queijo cheddar, cebola caramelizada e molho barbecue.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 32<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('Duplo Bacon', 32.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h2 class="section-title" id="especiais">⭐ Especiais da Casa</h2>
+    <div class="menu-grid">
+
+        <div class="burger-card">
+            <div class="badge">🆕 Novidade</div>
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=500" alt="Burger Especial">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Burger Supremo</div>
+                <p class="burger-desc">Blend 200g de costela, queijo brie, rúcula, tomate seco e geleia de pimenta.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 38<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('Burger Supremo', 38.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="burger-card">
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1610440042657-612c34d95e69?w=500" alt="Veggie Burger">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Veggie Burger</div>
+                <p class="burger-desc">Hambúrguer de grão de bico, queijo vegano, alface, tomate e molho especial vegano.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 26<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('Veggie Burger', 26.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="burger-card">
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1548369937-47519962c11a?w=500" alt="BBQ Burger">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">BBQ Onion</div>
+                <p class="burger-desc">Blend 180g, anéis de cebola crocante, queijo cheddar, molho barbecue defumado.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 30<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('BBQ Onion', 30.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h2 class="section-title" id="bebidas">🥤 Bebidas</h2>
+    <div class="menu-grid">
+        <div class="burger-card">
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500" alt="Refrigerante">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Refrigerante Lata</div>
+                <p class="burger-desc">Coca-Cola, Guaraná, Fanta - 350ml gelado.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 6<small>,00</small></span>
+                    <button class="btn-add" onclick="addToCart('Refrigerante', 6.00)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="burger-card">
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1541658016709-82535e94bc69?w=500" alt="Milkshake">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Milkshake</div>
+                <p class="burger-desc">Chocolate, morango ou baunilha - 400ml cremoso.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 15<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('Milkshake', 15.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title" id="sobremesas">🍰 Sobremesas</h2>
+    <div class="menu-grid">
+        <div class="burger-card">
+            <div class="burger-image">
+                <img src="https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500" alt="Brownie">
+            </div>
+            <div class="burger-info">
+                <div class="burger-name">Brownie com Sorvete</div>
+                <p class="burger-desc">Brownie quentinho com sorvete de creme e calda de chocolate.</p>
+                <div class="burger-footer">
+                    <span class="price">R$ 16<small>,90</small></span>
+                    <button class="btn-add" onclick="addToCart('Brownie', 16.90)">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- CARRINHO FLUTUANTE -->
+<div class="cart-float" id="cartFloat" onclick="openChat()">
+    🛒 Ver Pedido <span class="cart-count" id="cartCount">0</span>
+</div>
+
+<!-- CHATBOT -->
+<div class="chat-widget">
+    <div class="chat-toggle" onclick="toggleChat()">
+        💬
+        <span class="notification-dot" id="notifDot">1</span>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            <div class="chat-avatar">🤖</div>
+            <div class="chat-header-info">
+                <h4>Assistente Burger House</h4>
+                <span><i class="status-dot"></i> Online agora</span>
+            </div>
+            <div class="chat-close" onclick="toggleChat()">✕</div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                Olá! 👋 Sou o assistente virtual da Burger House! Como posso te ajudar hoje?
+                <div class="quick-replies">
+                    <button class="quick-btn" onclick="sendQuick('Ver cardápio')">📋 Ver cardápio</button>
+                    <button class="quick-btn" onclick="sendQuick('Fazer pedido')">🛒 Fazer pedido</button>
+                    <button class="quick-btn" onclick="sendQuick('Horário funcionamento')">🕒 Horário</button>
+                    <button class="quick-btn" onclick="sendQuick('Formas de pagamento')">💳 Pagamento</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
+            <button class="chat-send" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="social-icons">
+        <span>📘</span><span>📷</span><span>🐦</span><span>📱</span>
+    </div>
+    <p>© 2024 Burger House - Todos os direitos reservados</p>
+    <p style="margin-top:10px; font-size: 0.85rem;">📍 Rua dos Hambúrgueres, 123 - Centro | 📞 (11) 99999-9999</p>
+</footer>
+
+<script>
+let cart = [];
+let cartTotal = 0;
+
+function addToCart(name, price) {
+    cart.push({name, price});
+    cartTotal += price;
+    updateCartDisplay();
+    
+    // Feedback visual
+    event.target.textContent = '✓ Adicionado!';
+    event.target.style.background = '#4ade80';
+    setTimeout(() => {
+        event.target.textContent = '+ Adicionar';
+        event.target.style.background = '';
+    }, 1500);
+}
+
+function updateCartDisplay() {
+    document.getElementById('cartCount').textContent = cart.length;
+    if (cart.length > 0) {
+        document.getElementById('cartFloat').classList.add('show');
+    }
+}
+
+function openChat() {
+    document.getElementById('chatBox').classList.add('active');
+    document.getElementById('notifDot').style.display = 'none';
+    
+    if (cart.length > 0) {
+        let resumo = cart.map(item => `${item.name} - R$ ${item.price.toFixed(2)}`).join('\n');
+        addBotMessage(`🛒 Seu pedido atual:\n\n${resumo}\n\n💰 Total: R$ ${cartTotal.toFixed(2)}\n\nDeseja finalizar o pedido?`, [
+            {text: '✅ Finalizar pedido', action: 'finalizar'},
+            {text: '➕ Continuar comprando', action: 'continuar'}
+        ]);
+    }
+}
+
+function toggleChat() {
+    const chatBox = document.getElementById('chatBox');
+    chatBox.classList.toggle('active');
+    document.getElementById('notifDot').style.display = 'none';
+}
+
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (message) {
+        addUserMessage(message);
+        input.value = '';
+        showTyping();
+        
+        setTimeout(() => {
+            hideTyping();
+            processMessage(message);
+        }, 1200);
+    }
+}
+
+function sendQuick(message) {
+    addUserMessage(message);
+    showTyping();
+    
+    setTimeout(() => {
+        hideTyping();
+        processMessage(message);
+    }, 1200);
+}
+
+function addUserMessage(text) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const messageEl = document.createElement('div');
+    messageEl.className = 'message user';
+    messageEl.textContent = text;
+    messagesDiv.appendChild(messageEl);
+    scrollToBottom();
+}
+
+function addBotMessage(text, quickReplies = null) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const messageEl = document.createElement('div');
+    messageEl.className = 'message bot';
+    messageEl.innerHTML = text.replace(/\n/g, '<br>');
+    
+    if (quickReplies) {
+        const repliesDiv = document.createElement('div');
+        repliesDiv.className = 'quick-replies';
+        quickReplies.forEach(reply => {
+            const btn = document.createElement('button');
+            btn.className = 'quick-btn';
+            btn.textContent = reply.text;
+            btn.onclick = () => handleQuickAction(reply.action || reply.text);
+            repliesDiv.appendChild(btn);
+        });
+        messageEl.appendChild(repliesDiv);
+    }
+    
+    messagesDiv.appendChild(messageEl);
+    scrollToBottom();
+}
+
+function showTyping() {
+    const messagesDiv = document.getElementById('chatMessages');
+    const typingEl = document.createElement('div');
+    typingEl.className = 'typing-indicator';
+    typingEl.id = 'typingIndicator';
+    typingEl.innerHTML = '<span></span><span></span><span></span>';
+    messagesDiv.appendChild(typingEl);
+    scrollToBottom();
+}
+
+function hideTyping() {
+    const typingEl = document.getElementById('typingIndicator');
+    if (typingEl) typingEl.remove();
+}
+
+function scrollToBottom() {
+    const messagesDiv = document.getElementById('chatMessages');
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function handleQuickAction(action) {
+    addUserMessage(action);
+    showTyping();
+    
+    setTimeout(() => {
+        hideTyping();
+        
+        if (action === 'finalizar') {
+            addBotMessage(`🎉 Pedido confirmado!\n\n💰 Total: R$ ${cartTotal.toFixed(2)}\n\n📱 Em instantes você receberá a confirmação via WhatsApp!\n\nTempo estimado de entrega: 30-40 minutos ⏱️`);
+            cart = [];
+            cartTotal = 0;
+            document.getElementById('cartFloat').classList.remove('show');
+        } else if (action === 'continuar') {
+            addBotMessage('Ótimo! Continue navegando pelo cardápio. Quando terminar, é só clicar no carrinho! 😊');
+        } else {
+            processMessage(action);
+        }
+    }, 1000);
+}
+
+function processMessage(message) {
+    const msg = message.toLowerCase();
+    
+    if (msg.includes('cardápio') || msg.includes('cardapio') || msg.includes('menu')) {
+        addBotMessage('📋 Temos essas categorias incríveis:\n\n🍔 Clássicos - a partir de R$ 22,90\n⭐ Especiais - a partir de R$ 26,90\n🥤 Bebidas - a partir de R$ 6,00\n🍰 Sobremesas - a partir de R$ 16,90\n\nQuer que eu recomende algo?', [
+            {text: '🔥 Mais vendido', action: 'Qual o mais vendido?'},
+            {text: '🌱 Opção vegana', action: 'Tem opção vegana?'}
+        ]);
+    }
+    else if (msg.includes('pedido') || msg.includes('comprar') || msg.includes('quero')) {
+        addBotMessage('Ótimo! 😃 Navegue pelo cardápio acima e clique em "+ Adicionar" nos itens que desejar. Seu carrinho aparecerá no canto inferior esquerdo!\n\nPosso te ajudar a escolher algo específico?');
+    }
+    else if (msg.includes('horário') || msg.includes('horario') || msg.includes('funciona')) {
+        addBotMessage('🕒 Nosso horário de funcionamento:\n\nSegunda a Quinta: 18h às 23h\nSexta e Sábado: 18h às 00h\nDomingo: 18h às 22h\n\nEstamos sempre prontos para te atender! 🍔');
+    }
+    else if (msg.includes('pagamento') || msg.includes('pagar') || msg.includes('cartão')) {
+        addBotMessage('💳 Aceitamos:\n\n✅ Cartão de Crédito/Débito\n✅ PIX\n✅ Dinheiro\n✅ Vale Refeição\n\nTodas as formas são aceitas na entrega ou retirada!');
+    }
+    else if (msg.includes('vendido') || msg.includes('recomend') || msg.includes('melhor')) {
+        addBotMessage('🔥 Nosso campeão de vendas é o Cheese Bacon!\n\nPão brioche, blend 180g, queijo cheddar duplo, bacon crocante... uma explosão de sabor! 😍\n\nPor apenas R$ 28,90', [
+            {text: '➕ Adicionar ao pedido', action: 'sim adicionar cheese bacon'}
+        ]);
+    }
+    else if (msg.includes('vegano') || msg.includes('vegetarian') || msg.includes('veggie')) {
+        addBotMessage('🌱 Sim! Temos o Veggie Burger:\n\nHambúrguer de grão de bico, queijo vegano, alface, tomate e molho especial vegano.\n\nPor R$ 26,90 - Delicioso e saudável! 💚');
+    }
+    else if (msg.includes('entrega') || msg.includes('taxa') || msg.includes('frete')) {
+        addBotMessage('🛵 Fazemos entrega em toda a região!\n\nTaxa de entrega: R$ 5,00\nGrátis para pedidos acima de R$ 50,00\n\nTempo médio: 30-40 minutos');
+    }
+    else if (msg.includes('endereço') || msg.includes('endereco') || msg.includes('local') || msg.includes('onde')) {
+        addBotMessage('📍 Estamos localizados em:\n\nRua dos Hambúrgueres, 123 - Centro\n\n📞 Contato: (11) 99999-9999\n\nVenha nos visitar ou peça pelo delivery!');
+    }
+    else if (msg.includes('obrigad') || msg.includes('valeu') || msg.includes('thanks')) {
+        addBotMessage('Por nada! 😊 Estou aqui sempre que precisar. Bom apetite e aproveite seu Burger House! 🍔🔥');
+    }
+    else if (msg.includes('oi') || msg.includes('olá') || msg.includes('ola')) {
+        addBotMessage('Olá! 👋 Que bom te ver por aqui! Como posso ajudar você hoje?', [
+            {text: '📋 Ver cardápio', action: 'Ver cardápio'},
+            {text: '🛒 Fazer pedido', action: 'Fazer pedido'}
+        ]);
+    }
+    else {
+        addBotMessage('Desculpe, não entendi muito bem 😅 Mas posso te ajudar com:\n\n• Informações do cardápio\n• Fazer pedidos\n• Horário de funcionamento\n• Formas de pagamento\n• Endereço e entrega\n\nO que você gostaria de saber?', [
+            {text: '📋 Cardápio', action: 'Ver cardápio'},
+            {text: '🕒 Horário', action: 'Horário funcionamento'}
+        ]);
+    }
+}
+
+// Notificação inicial após 3 segundos
+setTimeout(() => {
+    const notifDot = document.getElementById('notifDot');
+    if (notifDot) notifDot.style.display = 'flex';
+}, 3000);
+</script>
+
+</body>
+</html>
