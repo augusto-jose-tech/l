@@ -20,26 +20,6 @@ Você pode visualizar o projeto em execução através do link: [Insira o link d
 - **Integração com WhatsApp**: O botão de finalização envia o resumo do pedido direto para o WhatsApp do estabelecimento.
 - **Status de Funcionamento**: Alerta visual dinâmico mostrando se a hamburgueria está aberta ou fechada com base no horário local.
 
-## 📸 Capturas de Tela
-
-![Banner Principal]([Link da imagem do topo do site])
-*Legenda: Tela inicial responsiva da hamburgueria.*
-
-## 📦 Como Executar o Projeto Localmente
-
-1. Clone este repositório para a sua máquina:
-   ```bash
-   git clone https://github.com
-   ```
-
-2. Navegue até a pasta do projeto:
-   ```bash
-   cd seu-repositorio
-   ```
-
-3. Abra o arquivo principal no seu navegador:
-   - Se estiver usando o VS Code, clique com o botão direito no arquivo `index.html` e selecione **Open with Live Server**.
-   - Ou simplesmente dê um duplo clique no arquivo `index.html`.
 
 ## ✍️ Autor
 
